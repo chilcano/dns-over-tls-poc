@@ -86,10 +86,10 @@ dnsQueryCli[send dns-pckt(5353 port)]
     └──> Docker[listen dns-pckt(5353 port)]
             |  
             └──> Docker[convert dns-pckt to dns-over-tls-pckt]
-                | 
-                └──> Docker[send dns-over-tls-pckt]
                     | 
-                    └──> Cloudflare DNS over TLS
+                    └──> Docker[send dns-over-tls-pckt]
+                            | 
+                            └──> Cloudflare DNS over TLS
 ```
 
 DNS queries:
