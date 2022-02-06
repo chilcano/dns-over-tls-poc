@@ -2,25 +2,27 @@
 
 #### 1. How do you build, run and use your proxy locally?
 
-* The Proxy is running in the client side, it listen for standard dns packets in the 5353 port, stablish TLS connection using the Cloudflare X.509 Certificate (Server Authentication), encapsulate the original dns packet in a TLS packet with the right Cloudflare credentials and port.
+* The Proxy is running in the client side, it listen for standard dns packets in the 5353 port, establish TLS connection using the Cloudflare X.509 Certificate (Server Authentication), encapsulate the original dns packet in a TLS packet with the right Cloudflare credentials and port.
 * Once resolved the DNS query, the Proxy sends back to client the dns response.
 
 #### 2. What privacy issue arises when using unencrypted communication to query DNS records?
 
 * The unencrypted communication can be intercepted and manipulated in transit.
-* The DNS server is not authenticated if TLS Certificated is not used.
-* Since we are using TLS Certificate only to stablish secure communication and to authenticate the Cloudflare DNS server, the security is not complete because the communication between client and proxy is not secure yet.
+* If communication is unencrypted, then TLS Certificated is not used and the DNS server is not authenticated.
+* Since we are using TLS Certificate only to establish secure communication and to authenticate the Cloudflare DNS server, the security is not complete because the communication between client and proxy is not secure yet.
 
 #### 3. How would you securely integrate the proxy in a distributed, microservices-oriented and containerized architecture?
 
 * The Proxy should be integrated as a Sidecar Container. However, this approach will impact your infraestructure since you are introdfucing an extra hop.
 * As Sidecar Container you could adopt Envoy Proxy and implement dns-over-TLS as an extension, even using WASM.
-* Other option is run the Proxy as DeamonSet if you are using Kubernetes or Edge Proxy in your Data Plane.
+* Other option is run the Proxy as DaemonSet, instead of deploying multiple Sidecars, if you are using Kubernetes or Edge Proxy in your Data Plane.
 
 #### 4. How would you configure the clients to talk securely to the proxy?
 
-* There isn't security between client and proxy. However, we could take advantage of TLS and enable Mutual TLS Authentication. This will require generate TLS Client Certificate and distribute them to all your clients, which can be a tedius work (Certificate rollout problem).
-* Other option could be routing all dns packets from your existing internal Router to your DNS-over-TLS Proxy. The Proxy will be transparent to your clients, however this option will impact the configuration of your Router.
+* An internal DNS-over-TLS Proxy is a trusted internal service, its configuration should be assigned (propagated) through DHCP service or be botstrapped during client booting in the trusted network. If that client is a containerized application, a sidecar container can bootstrap this DNS configuration.
+* Considering there isn't security between client and proxy, other option could be to take advantage of TLS and enable Mutual TLS Authentication. This option will require generate TLS Client Certificate and distribute them to all your clients, which can be a tedius work (Certificate rollout problem).
+* Other option could be re-routing all incoming dns packets from your existing internal Router to your internal DNS-over-TLS Proxy. This Proxy will be transparent to your clients, it will work as gateway, however this option will impact the configuration of your Router.
+
 
 #### 5. How would you protect the proxy against MITM attacks?
 
