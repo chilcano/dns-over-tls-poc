@@ -106,18 +106,18 @@ b'98.137.11.163'
 In other Terminal debug the `dotproxy1` Docker instance (DNS-over-TLS Proxy).  
 To show the Application logs run this:
 ```sh
-docker exec -it dotproxy1 tail -f /var/log/dot/app.log
+$ docker exec -it dotproxy1 tail -f /var/log/dot/app.log
 ```
 
 To show the Docker logs in Json format:
 ```sh
-CONTAINER_ID=$(docker inspect --format="{{.Id}}" dotproxy1)
-sudo tail -f  /var/lib/docker/containers/${CONTAINER_ID}/${CONTAINER_ID}-json.log | jq
+$ CONTAINER_ID=$(docker inspect --format="{{.Id}}" dotproxy1)
+$ sudo tail -f  /var/lib/docker/containers/${CONTAINER_ID}/${CONTAINER_ID}-json.log | jq
 ```
 
 Or if you want to show the classic format:
 ```sh
-docker logs -f dotproxy1
+$ docker logs -f dotproxy1
 ```
 
 ### 3. Cleaning up
