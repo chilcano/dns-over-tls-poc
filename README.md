@@ -80,9 +80,16 @@ CONTAINER ID   NAMES       PORTS                                   IMAGE
 
 We are going to use an ad-hoc DNS client implemented in Python3 which will send the DNS queries to Proxy in the `5353` port. The Proxy will redirect the DNS query and it will encapsulate in a TLS packet, according the `RFC7858`, and will send it to Cloudflare DNS.
 
-
 ```
-dnsQueryCli => dns-pckt(127.0.0.1:5353) => Docker(dns-pckt convert to dns-over-tls-pckt) => Docker (send dns-over-tls-pckt) => Cloudflare DNS
+dnsQueryCli[send dns-pckt(5353 port)]
+    |                                                                                       
+    └──> Docker[listen dns-pckt(5353 port)]
+            |                                                                                       
+            └──> Docker[convert dns-pckt to dns-over-tls-pckt]
+                | 
+                └──> Docker[send dns-over-tls-pckt]
+                    | 
+                    └──> Cloudflare DNS over TLS
 ```
 
 DNS queries:
