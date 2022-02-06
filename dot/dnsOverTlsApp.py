@@ -46,9 +46,7 @@ class dot:
         for part in split_url:
             packet += struct.pack("B", len(part))
             for byte in bytes(part):
-            #for byte in bytes(part.encode()):
                 packet += struct.pack("c", byte)
-                #packet += struct.pack("c", repr(byte).encode("utf-8"))
         packet += struct.pack("B", 0)  # End of String
         packet += struct.pack(">H", 1)  # Query Type
         packet += struct.pack(">H", 1)  # Query Class
@@ -71,7 +69,7 @@ class dot:
 
         context = ssl.create_default_context()
         context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-        context.load_verify_locations('./ca-certificate.crt')
+        context.load_verify_locations('./dot/ca-cloudflare.crt')
 
         wrappedSocket = context.wrap_socket(sock, server_hostname=HOST)
 
